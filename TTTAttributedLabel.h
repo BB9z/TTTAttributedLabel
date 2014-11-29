@@ -255,6 +255,15 @@ IB_DESIGNABLE
 ///----------------------------------
 
 /**
+ Sets the plain text displayed by the label.
+
+ @param text An `NSString` object to be displayed by the label.
+ 
+ @discussion Using this method the label will behave like a `UILabel`.
+ */
+- (void)setPlainText:(NSString *)plainText;
+
+/**
  Sets the text displayed by the label.
  
  @param text An `NSString` or `NSAttributedString` object to be displayed by the label. If the specified text is an `NSString`, the label will display the text like a `UILabel`, inheriting the text styles of the label. If the specified text is an `NSAttributedString`, the label text styles will be overridden by the styles specified in the attributed string.

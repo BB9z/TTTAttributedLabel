@@ -399,7 +399,7 @@ static inline CGSize CTFramesetterSuggestFrameSizeForAttributedStringWithConstra
 #pragma mark -
 
 - (void)setAttributedText:(NSAttributedString *)text {
-    if ([text isEqualToAttributedString:_attributedText]) {
+    if ([text isEqualToAttributedString:_attributedText] || (!text && !_attributedText)) {
         return;
     }
 
@@ -969,6 +969,18 @@ static inline CGSize CTFramesetterSuggestFrameSizeForAttributedStringWithConstra
 }
 
 #pragma mark - TTTAttributedLabel
+
+- (void)setPlainText:(NSString *)plainText {
+    // Clear attribute text to stop expensive rendering.
+    _attributedText = nil;
+
+    if ([plainText isKindOfClass:[NSAttributedString class]]) {
+        plainText = [(NSAttributedString *)plainText string];
+    }
+
+    [super setText:plainText];
+    [self setNeedsDisplay];
+}
 
 - (void)setText:(id)text {
     NSParameterAssert(!text || [text isKindOfClass:[NSAttributedString class]] || [text isKindOfClass:[NSString class]]);
