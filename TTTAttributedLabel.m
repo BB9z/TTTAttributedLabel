@@ -38,7 +38,6 @@ NSString * const kTTTBackgroundStrokeColorAttributeName = @"TTTBackgroundStrokeC
 NSString * const kTTTBackgroundLineWidthAttributeName = @"TTTBackgroundLineWidth";
 NSString * const kTTTBackgroundCornerRadiusAttributeName = @"TTTBackgroundCornerRadius";
 
-#if __IPHONE_OS_VERSION_MAX_ALLOWED >= 60000
 const NSTextAlignment TTTTextAlignmentLeft = NSTextAlignmentLeft;
 const NSTextAlignment TTTTextAlignmentCenter = NSTextAlignmentCenter;
 const NSTextAlignment TTTTextAlignmentRight = NSTextAlignmentRight;
@@ -54,45 +53,18 @@ const NSLineBreakMode TTTLineBreakByTruncatingTail = NSLineBreakByTruncatingTail
 
 typedef NSTextAlignment TTTTextAlignment;
 typedef NSLineBreakMode TTTLineBreakMode;
-#else
-const UITextAlignment TTTTextAlignmentLeft = NSTextAlignmentLeft;
-const UITextAlignment TTTTextAlignmentCenter = NSTextAlignmentCenter;
-const UITextAlignment TTTTextAlignmentRight = NSTextAlignmentRight;
-const UITextAlignment TTTTextAlignmentJustified = NSTextAlignmentJustified;
-const UITextAlignment TTTTextAlignmentNatural = NSTextAlignmentNatural;
-
-const UITextAlignment TTTLineBreakByWordWrapping = NSLineBreakByWordWrapping;
-const UITextAlignment TTTLineBreakByCharWrapping = NSLineBreakByCharWrapping;
-const UITextAlignment TTTLineBreakByClipping = NSLineBreakByClipping;
-const UITextAlignment TTTLineBreakByTruncatingHead = NSLineBreakByTruncatingHead;
-const UITextAlignment TTTLineBreakByTruncatingMiddle = NSLineBreakByTruncatingMiddle;
-const UITextAlignment TTTLineBreakByTruncatingTail = NSLineBreakByTruncatingTail;
-
-typedef UITextAlignment TTTTextAlignment;
-typedef UILineBreakMode TTTLineBreakMode;
-#endif
 
 
 static inline CTTextAlignment CTTextAlignmentFromTTTTextAlignment(TTTTextAlignment alignment) {
-#if __IPHONE_OS_VERSION_MAX_ALLOWED >= 60000
     switch (alignment) {
 		case NSTextAlignmentLeft: return kCTLeftTextAlignment;
 		case NSTextAlignmentCenter: return kCTCenterTextAlignment;
 		case NSTextAlignmentRight: return kCTRightTextAlignment;
 		default: return kCTNaturalTextAlignment;
 	}
-#else
-    switch (alignment) {
-		case UITextAlignmentLeft: return kCTLeftTextAlignment;
-		case UITextAlignmentCenter: return kCTCenterTextAlignment;
-		case UITextAlignmentRight: return kCTRightTextAlignment;
-		default: return kCTNaturalTextAlignment;
-	}
-#endif
 }
 
 static inline CTLineBreakMode CTLineBreakModeFromTTTLineBreakMode(TTTLineBreakMode lineBreakMode) {
-#if __IPHONE_OS_VERSION_MAX_ALLOWED >= 60000
 	switch (lineBreakMode) {
 		case NSLineBreakByWordWrapping: return kCTLineBreakByWordWrapping;
 		case NSLineBreakByCharWrapping: return kCTLineBreakByCharWrapping;
@@ -102,27 +74,7 @@ static inline CTLineBreakMode CTLineBreakModeFromTTTLineBreakMode(TTTLineBreakMo
 		case NSLineBreakByTruncatingMiddle: return kCTLineBreakByTruncatingMiddle;
 		default: return 0;
 	}
-#else
-    return CTLineBreakModeFromUILineBreakMode(lineBreakMode);
-#endif
 }
-
-#if __IPHONE_OS_VERSION_MAX_ALLOWED < 60000
-static inline CTLineBreakMode CTLineBreakModeFromUILineBreakMode(UILineBreakMode lineBreakMode) {
-#pragma clang diagnostic push
-#pragma clang diagnostic ignored "-Wdeprecated-declarations"
-    switch (lineBreakMode) {
-        case UILineBreakModeWordWrap: return kCTLineBreakByWordWrapping;
-        case UILineBreakModeCharacterWrap: return kCTLineBreakByCharWrapping;
-        case UILineBreakModeClip: return kCTLineBreakByClipping;
-        case UILineBreakModeHeadTruncation: return kCTLineBreakByTruncatingHead;
-        case UILineBreakModeTailTruncation: return kCTLineBreakByTruncatingTail;
-        case UILineBreakModeMiddleTruncation: return kCTLineBreakByTruncatingMiddle;
-        default: return 0;
-    }
-#pragma clang diagnostic pop
-}
-#endif
 
 static inline CGFLOAT_TYPE CGFloat_ceil(CGFLOAT_TYPE cgfloat) {
 #if CGFLOAT_IS_DOUBLE
@@ -456,11 +408,9 @@ static inline CGSize CTFramesetterSuggestFrameSizeForAttributedStringWithConstra
     [self setNeedsFramesetter];
     [self setNeedsDisplay];
 
-#if __IPHONE_OS_VERSION_MAX_ALLOWED >= 60000
     if ([self respondsToSelector:@selector(invalidateIntrinsicContentSize)]) {
         [self invalidateIntrinsicContentSize];
     }
-#endif
 
     [super setText:[self.attributedText string]];
 }
@@ -1049,11 +999,7 @@ static inline CGSize CTFramesetterSuggestFrameSizeForAttributedStringWithConstra
 
     self.links = [NSArray array];
     if (self.attributedText && self.enabledTextCheckingTypes) {
-#if __IPHONE_OS_VERSION_MIN_REQUIRED < 50000
-        __unsafe_unretained __typeof(self)weakSelf = self;
-#else
         __weak __typeof(self)weakSelf = self;
-#endif
         dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             __strong __typeof(weakSelf)strongSelf = weakSelf;
 
