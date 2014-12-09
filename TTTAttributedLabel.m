@@ -762,7 +762,9 @@ static inline CGSize CTFramesetterSuggestFrameSizeForAttributedStringWithConstra
                         [truncationString deleteCharactersInRange:NSMakeRange((NSUInteger)(lastLineRange.length - 1), 1)];
                     }
                 }
-                [truncationString appendAttributedString:attributedTruncationString];
+                if (attributedTruncationString) {
+                    [truncationString appendAttributedString:attributedTruncationString];
+                }
                 CTLineRef truncationLine = CTLineCreateWithAttributedString((__bridge CFAttributedStringRef)truncationString);
 
                 // Truncate the line in case it is too long.
@@ -787,7 +789,9 @@ static inline CGSize CTFramesetterSuggestFrameSizeForAttributedStringWithConstra
 
                 CFRelease(truncatedLine);
                 CFRelease(truncationLine);
-                CFRelease(truncationToken);
+                if (truncationToken) {
+                    CFRelease(truncationToken);
+                }
             } else {
                 CGContextSetTextPosition(c, lineOrigin.x, lineOrigin.y - descent - self.font.descender);
                 CTLineDraw(line, c);
